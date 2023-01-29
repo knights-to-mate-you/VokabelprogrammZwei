@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iterator>
+
+using namespace std; // Dadurch muss im Hauptprogramm nicht ständig die Anweisung "std:" (Standard) stehen.
+
+string Zeige_Auswahl_an() {               
+    cout << "Jetzt kommt ein Menü!\n"; 
+    cout << "Bitte wähle aus:\n";
+    cout << "(1) Neue Vokabel hinzufügen\n";
+    cout << "(2) Vokabeltest starten\n";
+    string Auswahl;
+    getline(cin, Auswahl);
+    return Auswahl;    // Die Funktion ist vom Typ string; die Auswahl soll angezeigt werden.
+    }
+
+vector<string> LadeDatei(string Sprache) {// Diese Funktion bewirkt das Laden der bisher aufgenommenen Vokabeln, bevor die nächste Vokabel hinzugefügt wird.
+    string Buchstaben;                    
+    ifstream Einlesen(Sprache);           
+    vector<string> Sprachvektor;
+
+        while (getline(Einlesen, Buchstaben))
+          {
+             if (Buchstaben.size() > 0)  // Es wird so lange die Textdatei eingelesen wie Buchstaben darin (> Null) zu finden sind.
+            Sprachvektor.push_back(Buchstaben);
+            }
+    return Sprachvektor;
+    }
+
+// Hier soll nachfolgend die Funktion definiert werden, mit welcher der Anwender zunächst das deutsche Wort und dann die englische Entsprechung eingibt.
+void DeutschEnglischEingabe() {
+    vector<string> Deutsch;
+    vector<string> Englisch;
+    string Deutsches_Wort;
+    string Englisches_Wort;
+    cout << "Welche deutsche Vokabel soll abgespeichert werden?\n ";
+    cin >> Deutsches_Wort;
+    Deutsch.push_back(Deutsches_Wort);
+    cout << "Wie lautet das englische Wort?\n ";
+    cin >> Englisches_Wort;
+    Englisch.push_back(Englisches_Wort);
+    cout << "Vokabel wurde hinzugefügt. \n";
+    cout << "Anzahl hinzugefügter Vokabeln:\n " + to_string(Deutsch.size());
+    }
+    
+// cout << "Welche deutsche Vokabel? ";
+// string Deutsches_Wort;
+// cin >> Deutsches_Wort;
+// Deutsch.push_back(Deutsches_Wort);
+// cout << "Wie lautet das englische Wort? ";
+// string Englisches_Wort;
+// cin >> Englisches_Wort;
+// Englisch.push_back(Englisches_Wort);
+// cout << "Vokabel wurde hinzugefügt. \n";
+// cout << "Anzahl hinzugefügter Vokabeln: " + to_string(Deutsches_Wort.size());
+
+
+void Speichere_Vektor_in_Datei(string Sprachdatei, vector<string>Wort_Vektor) {
+    ofstream Uebertrag_Vektor(Sprachdatei);
+    ostream_iterator<string> jedes_Wort(Uebertrag_Vektor, "\n");
+    copy(Wort_Vektor.begin(), Wort_Vektor.end(), jedes_Wort);
+}
+
+int main() {
+
+
+    vector<string> Deutsch = LadeDatei("Deutsch.txt"); // Aus dem Container Deutsch werden die bisher aufgenommenen deutschen Vokabeln geladen
+    vector<string> Englisch = LadeDatei("Englisch.txt"); 
+          
+    string Auswahlmoeglichkeit = Zeige_Auswahl_an(); // Die Funktion Zeige_Auswahl_an wurde vor dem Hauptprogramm definiert.
+
+    cout << " Deine Auswahl ist: " + Auswahlmoeglichkeit+ "\n";
+
+    if (Auswahlmoeglichkeit == "1") {
+        // Hier soll nachfolgend die Funktion aufgerufen werden, mit welcher der Anwender zunächst das deutsche Wort und dann die englische Entsprechung eingibt.
+        //  DeutschEnglischEingabe();
+        
+        string Deutsches_Wort;
+        string Englisches_Wort;
+        DeutschEnglischEingabe();
+        
+        
+        Speichere_Vektor_in_Datei("./Deutsch.txt", Deutsch);
+        Speichere_Vektor_in_Datei("./Englisch.txt", Englisch);
+
+      
+    }
+    else
+    {
+        cout << "Vokabeltest wird gestartet... ";
+    }
+    return 0; 
+}
+
